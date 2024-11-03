@@ -1,81 +1,168 @@
-import asyncio
-from playwright.async_api import async_playwright
+import dash
+from dash import dcc
+from dash import html
+import plotly.graph_objects as go
+from dash.dependencies import Input, Output
+import pandas as pd
+import graphics
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from models import Base, GD_JOB
+
+# Load your salary data (assuming it's a DataFrame called salary_db)
+salary_db = pd.read_sql_table("clean_df", "sqlite:///jobs.db")
+
+# Initialize the app
+app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
+
+avg_salary_non_remote, avg_salary_remote, perc_jobs_non_remote, perc_jobs_remote = graphics.calculate_salary_stats(salary_db)
+
+app.layout = html.Div([
+
+    html.Div([
+        html.H1("Salary Dashboard: Data Analysis From Glassdoor Perspective")
+    ], className='div-title'),
+
+    # Create sections for different graphs
+    html.Div([
+
+        # Section-Left
+        html.Div([
+            # Numbers grid
+            html.Div([
+                # Non-remote average salary
+                html.Div([
+                    html.Div([
+                        html.Span("Average Salary", className='salary-line'),
+                        html.Span("(In-Place)", className='salary-line')  # Class to control spacing
+                    ], className='salary-label'),
+                    html.Div(f"${avg_salary_non_remote / 1000:.1f}k", className='big-number'),
+                ], className='section section-numbers numbers-1'),
+
+                # Remote average salary
+                html.Div([
+                    html.Div([
+                        html.Span("Average Salary", className='salary-line'),
+                        html.Span("(Remote)", className='salary-line')  # Class to control spacing
+                    ], className='salary-label'),
+                    html.Div(f"${avg_salary_remote / 1000:.1f}k", className='big-number'),
+                ], className='section section-numbers numbers-2'),
+            ], className='numbers-grid'),
+
+            # Salary by State Boxplot
+            html.Div([
+                html.H2("Salary by State"),
+                dcc.Graph(figure=graphics.salary_boxplot(salary_db), config={'responsive': True}, className="titled-graph graph"),
+            ], className='graph-container boxplot'),
+        ], className="section-left section-side"),
+
+        # Section-Center
+        html.Div([
+
+            # Geographical Distribution Map
+            html.Div([
+                dcc.Graph(figure=graphics.geographical_distribution(salary_db), config={'responsive': False}, className="untitled-graph graph"),
+            ], className='graph-container map'),
+
+            # Filtering buttons
+            html.Div([
+                html.Button("Both", id="both-button", n_clicks=0, className="filter-button active"),
+                html.Button("Remote", id="remote-button", n_clicks=0, className="filter-button"),
+                html.Button("In-Place", id="inplace-button", n_clicks=0, className="filter-button")
+            ], className="button-container"),
+
+            html.Div([
+
+                # Salary by Company Size Bar Plot
+                html.Div([
+                    dcc.Graph(id='company-size-bar', config={'responsive': True}, className="untitled-graph graph"),
+                ], className='graph-container bar'),
+
+                # Salary by Revenue Bar Plot
+                html.Div([
+                    dcc.Graph(id='revenue-bar', config={'responsive': True}, className="untitled-graph graph"),
+                ], className='graph-container bar'),
+
+                # Salary by Rating Bar Plot
+                html.Div([
+                    dcc.Graph(id='rating-bar', config={'responsive': True}, className="untitled-graph graph"),
+                ], className='graph-container bar'),
+
+            ], className="section-bars"),
+            
+        ], className="section-center"),
+        
+        # Section-Right
+        html.Div([
+
+            # Average Salary by Sector
+            html.Div([
+                html.H2("What sector is paying more?"),
+                dcc.Graph(id='avg-salary-graph', config={'responsive': True}, className="titled-graph graph"),
+            ], className='graph-container dotplot'),
+
+        ], className="section-right section-side"),
+
+    ], className='dashboard-grid'),
+
+], className="div-main")
 
 
-GD_REMOTE = "https://www.glassdoor.com/Job/remote-us-data-analyst-jobs-SRCH_IL.0,9_IS11047_KO10,22.htm?remoteWorkType=1&sortBy=date_desc&fromAge=7"
+@app.callback(
+    [Output("both-button", "className"),
+     Output("remote-button", "className"),
+     Output("inplace-button", "className"),
+     Output("avg-salary-graph", "figure"),
+     Output("company-size-bar", "figure"),
+     Output("revenue-bar", "figure"),
+     Output("rating-bar", "figure")],
+    [Input("both-button", "n_clicks"),
+     Input("remote-button", "n_clicks"),
+     Input("inplace-button", "n_clicks")]
+)
+def update_filter_and_graphs(both_clicks, remote_clicks, inplace_clicks):
+    # Determine which button was clicked
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        selected_filter = "both"
+    else:
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if button_id == "both-button":
+            selected_filter = "both"
+        elif button_id == "remote-button":
+            selected_filter = "remote"
+        elif button_id == "inplace-button":
+            selected_filter = "in-place"
 
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
-}
+    # Apply the filter to the data
+    if selected_filter == "remote":
+        filtered_data = salary_db[salary_db["city"] == "Remote"]
+    elif selected_filter == "in-place":
+        filtered_data = salary_db[salary_db["city"] != "Remote"]
+    else:
+        filtered_data = salary_db  # No filter, use the entire dataset
+    
+    # Safety check for empty or small datasets
+    if filtered_data.empty:
+        return (
+            "filter-button active", "filter-button", "filter-button",  # Button classes
+            go.Figure(),  # Empty figure for avg_salary_graph
+            go.Figure(),  # Empty figure for company_size_bar
+            go.Figure(),  # Empty figure for revenue_bar
+            go.Figure()   # Empty figure for rating_bar
+        )
 
-db_url = ("sqlite:///jobs.db")
-engine = create_engine(db_url)
-Session = sessionmaker(bind=engine)
-session = Session()
+    # Now generate the figures with the filtered data
+    avg_salary_fig = graphics.avg_salary(filtered_data, "sector", city_filter=selected_filter)
+    company_size_fig = graphics.avg_salary_bar(filtered_data, "size_str")
+    revenue_fig = graphics.avg_salary_bar(filtered_data, "revenue_str")
+    rating_fig = graphics.avg_salary_bar(filtered_data, "rating")
 
-Base.metadata.create_all(engine)
-
-async def get_more_jobs(page):
-    while True:
-        try:
-            await page.wait_for_timeout(2000)
-            close_button = await page.query_selector("xpath=/html/body/div[11]/div[2]/div[2]/div[1]/div[1]/button")
-            if close_button:
-                await close_button.click()
-                await page.wait_for_timeout(2000)
-            else:
-
-                load_button = await page.query_selector("[data-test='load-more']")
-                if load_button:
-                    await load_button.click()
-                    await page.wait_for_timeout(2000)
-                else:
-                    break
-        except Exception as e:
-            print(f"Error getting more jobs {e}")
-            break
-
-async def main():
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)
-        await browser.new_context(viewport={"width": 1920, "height": 1080})
-        page = await browser.new_page()
-        page.set_default_timeout(60000)
-        await page.goto(GD_REMOTE)
-
-        await get_more_jobs(page)
-
-        jobs = await page.query_selector_all(".JobsList_jobListItem__wjTHv")
-        counter = 1
-        for job in jobs:
-            try:
-                title = await job.query_selector("[data-test$='job-title']")
-                location = await job.query_selector('[data-test$="emp-location"]')
-                salary = await job.query_selector('[data-test$="detailSalary"]')
-                
-
-                title_text = await title.inner_text()
-                location_text = await location.inner_text()
-                link_text = await title.get_attribute('href')
-
-                if salary:
-                    salary_text = await salary.inner_text()
-                else:
-                    salary_text = "n/a"
-
-                new_job = GD_JOB(title=title_text, location=location_text, salary=salary_text, link=link_text)
-                session.add(new_job)
-                session.commit()
-                
-                print(title_text, location_text, salary_text, link_text)
-                print(counter)
-                counter += 1
-            except Exception as e:
-                print(f"We couldn't retrieve the information: {e}")
-        await browser.close()
-
-asyncio.run(main())
+    # Determine button classes based on the selected filter
+    if selected_filter == "both":
+        return "filter-button active", "filter-button", "filter-button", avg_salary_fig, company_size_fig, revenue_fig, rating_fig
+    elif selected_filter == "remote":
+        return "filter-button", "filter-button active", "filter-button", avg_salary_fig, company_size_fig, revenue_fig, rating_fig
+    elif selected_filter == "in-place":
+        return "filter-button", "filter-button", "filter-button active", avg_salary_fig, company_size_fig, revenue_fig, rating_fig
+# Run the app
+if __name__ == '__main__':
+    app.run_server(debug=True)

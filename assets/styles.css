@@ -1,0 +1,276 @@
+:root {
+    --clr-primary-100:#fff;
+    --clr-primary-200: #7f8c8d;
+    --clr-primary-300: lightgrey;
+    --clr-primary-650:#2a417d;
+    --clr-primary-700: #1c2251;
+
+    --clr-accent-100: #f6b53a;
+    --clr-accent-200: #ef8b5a;
+    --clr-accent-400: #119281;
+
+    --ff-primary: 'Montserrat', sans-serif;
+
+    --fw-regular: 400;
+    --fw-semi-bold: 550;
+    --fw-bold: 700;
+
+    --fs-100: 1.25rem;
+    --fs-200: 2rem;
+    --fs-300: 2.5rem;
+    --fs-500: 3rem;
+    
+    --bg-650: var(--clr-primary-650); 
+    --bg-primary: var(--clr-primary-700);
+    --bg-secondary: var(--clr-primary-650);
+    --bg-accent: var(--clr-accent-400);
+
+    --clr-txt-primary: var(--clr-primary-100);
+    --clr-text-accent: var(--clr-accent-100);
+    --clr-text-accent-dark: var(--bg-secondary);
+    
+    --clr-num-main: #2fa57f;
+    --clr-num-accent: #7bca71;
+    
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+    position: relative;
+    left: 0;
+    color: var(--clr-txt-primary);
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+body {
+    font-family: var(--ff-primary);
+    background-color: var(--bg-primary);
+}
+
+.div-main {
+    padding-inline: 2em;
+    padding-block: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+
+h1 {
+    font-size:var(--fs-500);
+    font-weight: 700;
+}
+
+h2 {
+    font-size: var(--fs-200);
+    font-weight: 500;
+    color: var(--clr-primary-100);
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+    width: 100%;
+}
+
+.graph {
+    background-color: var(--bg-secondary);
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.untitled-graph {
+    height: 100%;
+}
+
+.graph h2, .graph .gtitle {
+    white-space: normal;  /* Allow text to wrap */
+    word-wrap: break-word; /* Ensure words break if they are too long */
+    width: 100%;  /* Ensure the title takes full width */
+}
+
+
+/* Block style for salary parts (e.g., "Average Salary" and "(Remote)") */
+.salary-line {
+    display: block;
+    margin-top: 5px;  /* Adjust the space between lines */
+}
+
+.div-title {
+    margin-block: 0.5em;
+}
+/* main grid */
+.dashboard-grid {
+    /* position: relative;
+    left: 0; */
+    display: flex;
+    margin-top: 20px;
+    gap: 30px;
+}
+
+.section-side {
+    /* position: absolute;
+    left: 0; */
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+}
+
+
+/* Left section */
+
+.graph-container {
+    border: 1px solid var(--clr-primary-700);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.section-numbers {
+    
+    border: 4px solid var(--clr-primary-650);
+    /* border-color: var(--clr-accent-400); */
+    border-radius: 45px;
+    height: 150px;
+    width: 230px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.numbers-1 {
+    background-color: var(--clr-num-main);
+}
+
+.numbers-2 {
+    background-color: var(--clr-num-accent);
+}
+
+.numbers-grid {
+    display: flex;
+    justify-content: center;
+    font-size: var(--fs-100);
+    grid-gap: 1.5em;
+}
+
+.big-number {
+    font-size: var(--fs-500);
+    font-weight: bold;
+    text-align: center;
+    color: var(--bg-primary);
+    margin-top: 2px;
+}
+
+
+.boxplot {
+    height: 650px;
+}
+
+.salary-label {
+    font-size: var(--fs-100);
+    color: var(--clr-primary-700);
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Section Center*/
+.section-center {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    gap: 10px;
+}
+
+.map {
+    height: 400px;
+    padding-top: 0px;
+}
+
+
+.section-bars {
+    display: flex;
+    gap: 10px;
+}
+
+.bar {
+    height: 350px;
+    width: 250px;
+}
+
+.button-container {
+    text-align: center;
+}
+
+.filter-button {
+    width: 120px;
+    height: 40px;
+    margin-right: 10px;
+    border: 2px solid var(--clr-txt-primary);
+    border-radius: 5px;
+    background-color: transparent;
+    color: var(--clr-txt-primary);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filter-button:hover {
+    background-color: #1e90ff;
+    color: var(--clr-txt-primary);
+}
+
+.filter-button.active {
+    background-color: var(--clr-num-accent);
+    color: white;
+    border-color: var(--clr-num-main);
+}
+
+/* Section Right */
+.dotplot {
+    height: 873px;
+    padding-top: 0px;
+}
+
+.titled-graph{
+    height: 90%;
+}
