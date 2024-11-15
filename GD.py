@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from models import Base, GD_JOB, GD_JOBS_USA
 
 
-GD_REMOTE = "https://www.glassdoor.com/Job/united-states-data-analyst-jobs-SRCH_IL.0,13_IN1_KO14,26.htm?fromAge=30"
+GD_REMOTE = "https://www.glassdoor.com/Job/wyoming-mi-us-data-jobs-SRCH_IL.0,13_IC1134822_KO14,18.htm"
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0',
@@ -46,7 +46,6 @@ async def extract_text(page, div_selector):
     else:
         return None
 
-
 async def main():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False)
@@ -69,7 +68,7 @@ async def main():
                 salary = await job.query_selector('[data-test$="detailSalary"]')
                 
 
-                if salary != None:
+                if salary is not None:
                     salary_text = await salary.inner_text()
                 else:
                     salary_text = "n/a"
@@ -86,14 +85,14 @@ async def main():
                 link_text = await title.get_attribute('href')
                 description_text = await extract_text(page, ".JobDetails_jobDescription__uW_fK")
                 
-                new_job = GD_JOBS_USA(title=title_text, location=location_text, salary=salary_text, link=link_text, description=description_text)
+                new_job = GD_JOB(title=title_text, location=location_text, salary=salary_text, link=link_text, description=description_text)
                 
                 
 
                 company = await page.query_selector(".JobDetails_companyOverviewGrid__3t6b4")
                 
 
-                if company != None:
+                if company is not None:
                     company_text =  await extract_text(page, ".JobDetails_companyOverviewGrid__3t6b4")
                     size = company_text.split("\n")[1]
                     founded = company_text.split("\n")[3]
@@ -107,7 +106,7 @@ async def main():
                 
                 rating = await page.query_selector(".RatingHeadline_sectionRatingScoreLeft__di1of")
                 
-                if rating != None:
+                if rating is not None:
                     rating_text = await rating.inner_text()
                     new_job.add_rating(rating=rating_text)
                 

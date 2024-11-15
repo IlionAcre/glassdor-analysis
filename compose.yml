@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    image: dash-glassdoor:first
+    ports:
+      - "8180:8180"
+    volumes:
+      - ./data:/data
+    environment:
+      - DB_PATH
+      - TABLENAME

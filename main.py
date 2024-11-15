@@ -1,3 +1,4 @@
+import os
 import dash
 from dash import dcc
 from dash import html
@@ -5,12 +6,18 @@ import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 import pandas as pd
 import graphics
+from sqlalchemy import create_engine
 
 
-# Load your salary data (assuming it's a DataFrame called salary_db)
-salary_db = pd.read_sql_table("clean_df", "sqlite:///jobs.db")
+DB_PATH = os.getenv("DB_PATH")
+TABLENAME = os.getenv("TABLENAME")
 
-# Initialize the app
+engine = create_engine(DB_PATH)
+
+
+salary_db = pd.read_sql_table(TABLENAME, con=engine)
+
+
 app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
 
 avg_salary_non_remote, avg_salary_remote, perc_jobs_non_remote, perc_jobs_remote = graphics.calculate_salary_stats(salary_db)
@@ -18,7 +25,7 @@ avg_salary_non_remote, avg_salary_remote, perc_jobs_non_remote, perc_jobs_remote
 app.layout = html.Div([
 
     html.Div([
-        html.H1("Salary Dashboard: Data Analysis From Glassdoor Perspective")
+        html.H1("Salary Dashboard: Glassdoor Data Analysis")
     ], className='div-title'),
 
     # Create sections for different graphs
@@ -165,4 +172,4 @@ def update_filter_and_graphs(both_clicks, remote_clicks, inplace_clicks):
         return "filter-button", "filter-button", "filter-button active", avg_salary_fig, company_size_fig, revenue_fig, rating_fig
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host="0.0.0.0", port=8180)

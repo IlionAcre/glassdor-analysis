@@ -15,10 +15,10 @@
     --fw-semi-bold: 550;
     --fw-bold: 700;
 
-    --fs-100: 1.25rem;
-    --fs-200: 2rem;
-    --fs-300: 2.5rem;
-    --fs-500: 3rem;
+    --fs-100: 0.9375rem;
+    --fs-200: 1.5rem;
+    --fs-300: 1.875rem;
+    --fs-500: 2.25rem;
     
     --bg-650: var(--clr-primary-650); 
     --bg-primary: var(--clr-primary-700);
@@ -47,38 +47,41 @@ article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup, 
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
-	display: block;
+    display: block;
 }
 body {
-	line-height: 1;
+    line-height: 1;
     position: relative;
     left: 0;
     color: var(--clr-txt-primary);
+    overflow: auto;
 }
+
 ol, ul {
-	list-style: none;
+    list-style: none;
 }
 blockquote, q {
-	quotes: none;
+    quotes: none;
 }
 blockquote:before, blockquote:after,
 q:before, q:after {
-	content: '';
-	content: none;
+    content: '';
+    content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 body {
@@ -87,8 +90,8 @@ body {
 }
 
 .div-main {
-    padding-inline: 2em;
-    padding-block: 1em;
+    padding-inline: 1.125em;
+    padding-block: 0.5625em;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -96,12 +99,11 @@ body {
 }
 
 .section {
-    margin-bottom: 30px;
+    margin-bottom: 22.5px;
 }
 
-
 h1 {
-    font-size:var(--fs-500);
+    font-size: var(--fs-500);
     font-weight: 700;
 }
 
@@ -110,14 +112,14 @@ h2 {
     font-weight: 500;
     color: var(--clr-primary-100);
     margin-top: 0;
-    margin-bottom: 15px;
+    margin-bottom: 11.25px;
     text-align: center;
     width: 100%;
 }
 
 .graph {
     background-color: var(--bg-secondary);
-    border-radius: 30px;
+    border-radius: 22.5px;
     overflow: hidden;
 }
 
@@ -131,23 +133,25 @@ h2 {
     width: 100%;  /* Ensure the title takes full width */
 }
 
-
 /* Block style for salary parts (e.g., "Average Salary" and "(Remote)") */
 .salary-line {
     display: block;
-    margin-top: 5px;  /* Adjust the space between lines */
+    margin-top: 3.75px;  /* Adjust the space between lines */
 }
 
 .div-title {
-    margin-block: 0.5em;
+    margin-block: 0.375em;
 }
 /* main grid */
 .dashboard-grid {
     /* position: relative;
     left: 0; */
     display: flex;
-    margin-top: 20px;
-    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    gap: 22.5px;
+    max-width: 100%;
 }
 
 .section-side {
@@ -155,25 +159,22 @@ h2 {
     left: 0; */
     display: flex;
     flex-direction: column;
-    width: 500px;
+    width: 375px;
 }
 
-
 /* Left section */
-
 .graph-container {
-    border: 1px solid var(--clr-primary-700);
-    border-radius: 10px;
-    padding: 10px;
+    border: 0.75px solid var(--clr-primary-700);
+    border-radius: 7.5px;
+    padding: 7.5px;
 }
 
 .section-numbers {
-    
-    border: 4px solid var(--clr-primary-650);
+    border: 3px solid var(--clr-primary-650);
     /* border-color: var(--clr-accent-400); */
-    border-radius: 45px;
-    height: 150px;
-    width: 230px;
+    border-radius: 33.75px;
+    height: 112.5px;
+    width: 172.5px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -191,7 +192,7 @@ h2 {
     display: flex;
     justify-content: center;
     font-size: var(--fs-100);
-    grid-gap: 1.5em;
+    grid-gap: 1.125em;
 }
 
 .big-number {
@@ -199,12 +200,11 @@ h2 {
     font-weight: bold;
     text-align: center;
     color: var(--bg-primary);
-    margin-top: 2px;
+    margin-top: 1.5px;
 }
 
-
 .boxplot {
-    height: 650px;
+    height: 487.5px;
 }
 
 .salary-label {
@@ -218,40 +218,46 @@ h2 {
 .section-center {
     display: flex;
     flex-direction: column;
-    width: 800px;
-    gap: 10px;
+    width: 600px;
+    gap: 7.5px;
 }
 
 .map {
-    height: 400px;
+    height: 300px;
     padding-top: 0px;
 }
 
-
 .section-bars {
     display: flex;
-    gap: 10px;
+    gap: 7.5px;
 }
 
 .bar {
-    height: 350px;
-    width: 250px;
+    height: 262.5px;
+    width: 187.5px;
 }
 
 .button-container {
     text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .filter-button {
-    width: 120px;
-    height: 40px;
-    margin-right: 10px;
-    border: 2px solid var(--clr-txt-primary);
-    border-radius: 5px;
+    width: 90px;
+    height: 30px;
+    margin-right: 7.5px;
+    border: 1.5px solid var(--clr-txt-primary);
+    border-radius: 3.75px;
     background-color: transparent;
     color: var(--clr-txt-primary);
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .filter-button:hover {
@@ -267,7 +273,7 @@ h2 {
 
 /* Section Right */
 .dotplot {
-    height: 873px;
+    height: 654.75px;
     padding-top: 0px;
 }
 

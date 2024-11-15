@@ -26,16 +26,13 @@ FONT_LABEL_SIZE = 16,
 FONT_LABEL_FAMILY ="Georgia",
 
 def prepare_data(df, group):
-    # Group by sector and calculate the average salary and job count
     sector_data = df.groupby(group).agg(
-        salary=("salary", "mean"),  # Average salary by sector
-        job_count=(group, "count")  # Number of jobs in each sector
+        salary=("salary", "mean"),
+        job_count=(group, "count")
     ).reset_index()
 
-    # Calculate the total number of jobs in the dataset
     total_jobs = sector_data[f"job_count"].sum()
 
-    # Calculate the percentage of jobs for each sector
     sector_data[f"{group}_percentage"] = (sector_data["job_count"] / total_jobs) * 100
 
     return sector_data
@@ -54,7 +51,8 @@ def salary_boxplot(df):
         boxmean="sd",
         line=dict(color="rgba(112, 198, 116, 0.5)", width=3),
         fillcolor="rgba(112, 198, 116, 0.15)",
-        whiskerwidth=0.5
+        whiskerwidth=0.5,
+        boxpoints=False  # Remove individual data points (outliers)
     )
 
     box_trace_remote = go.Box(
@@ -65,7 +63,8 @@ def salary_boxplot(df):
         boxmean="sd",
         line=dict(color="#edef5d", width=3),
         fillcolor="rgba(31,119,180,0.3)",
-        whiskerwidth=0.5
+        whiskerwidth=0.5,
+        boxpoints=False  # Remove individual data points (outliers)
     )
 
     fig = go.Figure(data=[box_trace_non_remote, box_trace_remote])
@@ -73,10 +72,10 @@ def salary_boxplot(df):
     fig.update_layout(
         width=None,
         height=None,
-        margin={"r": 0, "t": 100, "l": 0, "b": 50},
+        margin={"r": 0, "t": 100, "l": 45, "b": 50},
         paper_bgcolor=PAPER_BG_COLOR,
         plot_bgcolor=PLOT_BG_COLOR,
-        title= "Salary Statistics by Type",
+        title="Salary Statistics by Type",
         title_font=FONT_TITLE,
         font=dict(size=12),
         xaxis=dict(
@@ -95,7 +94,7 @@ def salary_boxplot(df):
         hoverlabel=dict(
             font_size=16,
             font_family="Georgia",
-            font_color=FONT_COLOR
+            font_color="black",
         ),
         showlegend=True,
         legend=dict(
@@ -107,30 +106,6 @@ def salary_boxplot(df):
             x=0.95,
         ),
     )
-
-    fig.update_traces(
-        hoverlabel=dict(
-            font_size=16,
-            font_family="Georgia",
-            font_color=FONT_ACCENT_COLOR,
-        ),
-        customdata=np.stack((df["title"], df["location"], df["industry"], df["salary"]), axis=-1),
-        hovertemplate=(
-            "<b>Job Title:</b> %{customdata[0]}<br>"
-            "<b>Location:</b> %{customdata[1]}<br>"
-            "<b>Industry:</b> %{customdata[2]}<br>"
-            "<b>Salary:</b> $%{customdata[3]:,.0f}<br>"
-            "<extra></extra>"
-        ),
-        selector=dict(type="box")
-    )
-
-    fig.update_traces(
-    hoverlabel=dict(
-        font_color=PLOT_BG_COLOR,
-    ),
-    selector=dict(name="Remote")
-)
 
     return fig
 
@@ -178,7 +153,7 @@ def avg_salary(df, group, city_filter='both'):
         group_data,
         x="salary",
         y=group,
-        title=f"Average Salary by {group.capitalize()}<br>(Right = Higher Salary)",
+        title=f"Salary avg by {group.capitalize()}<br>(Right = Higher Salary)",
         size="size",
         size_max=15,
         color="group_percentage",
@@ -200,7 +175,7 @@ def avg_salary(df, group, city_filter='both'):
         width=None,
         paper_bgcolor=PAPER_BG_COLOR,
         plot_bgcolor=PLOT_BG_COLOR,
-        margin=dict(l=0, r=0, t=60, b=20),
+        margin=dict(l=0, r=0, t=60, b=10),
         title_font=FONT_TITLE,
         xaxis=dict(showgrid=False, title="", color=FONT_COLOR, showline=True, zerolinecolor=FONT_COLOR),
         yaxis=dict(showgrid=False, gridcolor=FONT_COLOR, title="", tickfont=dict(size=14, color=FONT_COLOR)),
@@ -213,7 +188,11 @@ def geographical_distribution(df):
     # Group by state and calculate the average salary
     df_subset = df.groupby('state')['salary'].mean().reset_index()
     df_subset.columns = ['state', 'average_salary']
-    
+
+    # Format salary to 'k' with one decimal place
+    df_subset["average_salary"] = df_subset["average_salary"] / 1000
+    df_subset["average_salary"] = df_subset["average_salary"].round(1)
+
     # Create the choropleth map
     fig = px.choropleth(
         locations=df_subset["state"], 
@@ -221,6 +200,14 @@ def geographical_distribution(df):
         color=df_subset["average_salary"], 
         scope="usa", 
         color_continuous_scale=MAIN_COLOR,
+    )
+    
+    # Update hover template
+    fig.update_traces(
+        hovertemplate=(
+            "<b>State:</b> %{location}<br>"
+            "<b>Salary:</b> %{z:.1f}k USD<extra></extra>"
+        )
     )
     
     fig.update_layout(
@@ -231,9 +218,9 @@ def geographical_distribution(df):
         title_text="September 2024 USA Data Analyst Salaries",
         title_font=FONT_TITLE,
         coloraxis_colorbar=dict(
-        title=dict(
-            text="USD",
-            font=FONT_COLORBAR,
+            title=dict(
+                text="USD",
+                font=FONT_COLORBAR,
             ),
         )
     )
@@ -241,7 +228,6 @@ def geographical_distribution(df):
     # Update the background of the map itself
     fig.update_geos(bgcolor=PLOT_BG_COLOR)
     
-    # Return the figure instead of showing it
     return fig
 
 def avg_salary_bar(df, group, city_filter="both"):
@@ -324,7 +310,7 @@ def avg_salary_bar(df, group, city_filter="both"):
         y="salary", 
         color="group_percentage", 
         color_continuous_scale=MAIN_COLOR, 
-        title=f"Average Salary by {group.replace('_str', '').capitalize()}",
+        title=f"Salary avg by {group.replace('_str', '').capitalize()}",
     )
 
     fig.update_layout(
@@ -332,7 +318,7 @@ def avg_salary_bar(df, group, city_filter="both"):
         width=None,
         paper_bgcolor=PAPER_BG_COLOR,
         plot_bgcolor=PLOT_BG_COLOR,
-        margin=dict(l=0, r=0, t=50, b=20),
+        margin=dict(l=0, r=0, t=50, b=0),
         title_font=FONT_TITLE_LITTLE,
         coloraxis_colorbar=dict(
             xanchor="left",
@@ -350,7 +336,7 @@ def avg_salary_bar(df, group, city_filter="both"):
             tickfont=dict(color=FONT_COLOR),
             tickprefix="$",
             ticksuffix="k",
-            range=[60, 100]
+            range=[60, 120]
         ),
     )
     

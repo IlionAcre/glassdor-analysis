@@ -1,0 +1,32 @@
+# Ignore Python cache files
+*.pyc
+__pycache__/
+
+# Ignore virtual environment directory
+venv/
+.env/
+
+# Ignore configuration files that may contain sensitive data
+*.env
+
+# Ignore build and deployment artifacts
+*.log
+*.swp
+*.bak
+.DS_Store
+
+# Ignore Docker-related artifacts
+docker-compose.yml
+Dockerfile
+
+# Ignore test and documentation files
+tests/
+docs/
+
+# Ignore other common artifacts
+.idea/
+.vscode/
+*.git
+
+.env
+Dockerfile
