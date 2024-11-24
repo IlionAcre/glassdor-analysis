@@ -132,20 +132,24 @@ def avg_salary(df, group, city_filter='both'):
     group_data = group_data.sort_values(by="salary", ascending=True)
 
     group_data[group] = group_data[group].replace({
-        "Energy, Mining & Utilities": "Energy/Mining/Util.",
-        "Personal Consumer Services": "Personal Services",
+        "Energy, Mining & Utilities": "Energy/Mining",
+        "Personal Consumer Services": "Personal svc",
         "Information Technology": "IT",
         "Human Resources & Staffing": "HR/Staffing",
         "Management & Consulting": "Consulting",
-        "Media & Communication": "Media/Communication",
-        "Aerospace & Defense": "Aerospace/Defense",
-        "Pharmaceutical & Biotechnology": "Pharma/Biotech",
+        "Media & Communication": "Media/Comm",
+        "Telecommunications": "Telecomms",
+        "Financial Services": "Financial",
+        "Aerospace & Defense": "Aerospace",
+        "Pharmaceutical & Biotechnology": "Pharma",
         "Transportation & Logistics": "Transport",
         "Construction, Repair & Maintenance Services": "Constr/Repair",
-        "Government & Public Administration": "Gov/Public Admin.",
-        "Arts, Entertainment & Recreation": "Arts/Recreation",
+        "Retail & Wholesale": "Retail",
+        "Nonprofit & NGO": "Nonprofil",
+        "Government & Public Administration": "Government",
+        "Arts, Entertainment & Recreation": "Arts",
         "Hotels & Travel Accommodation": "Hotels/Travel",
-        "Restaurants & Food Service": "Restaurants/Food"
+        "Restaurants & Food Service": "Food"
     })
 
     group_data['size'] = 15
@@ -153,7 +157,7 @@ def avg_salary(df, group, city_filter='both'):
         group_data,
         x="salary",
         y=group,
-        title=f"Salary avg by {group.capitalize()}<br>(Right = Higher Salary)",
+        title=f"Salary by {group.capitalize()}<br>(Right = Higher Salary)",
         size="size",
         size_max=15,
         color="group_percentage",
@@ -310,7 +314,7 @@ def avg_salary_bar(df, group, city_filter="both"):
         y="salary", 
         color="group_percentage", 
         color_continuous_scale=MAIN_COLOR, 
-        title=f"Salary avg by {group.replace('_str', '').capitalize()}",
+        title=f"Salary by {group.replace('_str', '').capitalize()}",
     )
 
     fig.update_layout(

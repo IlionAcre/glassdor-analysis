@@ -56,17 +56,31 @@ app.layout = html.Div([
 
             # Salary by State Boxplot
             html.Div([
-                html.H2("Salary by State"),
-                dcc.Graph(figure=graphics.salary_boxplot(salary_db), config={'responsive': True}, className="titled-graph graph"),
+                html.H2("Remote or not?"),
+                dcc.Loading(
+                    dcc.Graph(
+                        figure=graphics.salary_boxplot(salary_db), 
+                        config={'responsive': True}, 
+                        className="box-graph graph",
+                        style={"height":"calc(100dvh - 290px)", "minHeight":"423px","maxHeight":"836.667px"}
+                    ),
+                ),                
             ], className='graph-container boxplot'),
         ], className="section-left section-side"),
 
         # Section-Center
         html.Div([
-
+            
             # Geographical Distribution Map
             html.Div([
-                dcc.Graph(figure=graphics.geographical_distribution(salary_db), config={'responsive': False}, className="untitled-graph graph"),
+                dcc.Loading(
+                    dcc.Graph(
+                        figure=graphics.geographical_distribution(salary_db), 
+                        config={'responsive': False}, 
+                        className="untitled-graph graph",
+                        style={"height":"calc(50dvh - 30px)", "MinHeight":"308px", "maxHeight": "533.333px"}
+                    ),
+                ),                
             ], className='graph-container map'),
 
             # Filtering buttons
@@ -80,17 +94,38 @@ app.layout = html.Div([
 
                 # Salary by Company Size Bar Plot
                 html.Div([
-                    dcc.Graph(id='company-size-bar', config={'responsive': True}, className="untitled-graph graph"),
+                    dcc.Loading(
+                        dcc.Graph(
+                            id='company-size-bar', 
+                            config={'responsive': True}, 
+                            className="untitled-graph graph",
+                            style={"height":"calc(50dvh - 140px)", "minHeight": "238px", "maxHeight":"423.333px"}
+                        ),
+                    )
                 ], className='graph-container bar'),
 
                 # Salary by Revenue Bar Plot
                 html.Div([
-                    dcc.Graph(id='revenue-bar', config={'responsive': True}, className="untitled-graph graph"),
+                    dcc.Loading(
+                        dcc.Graph(
+                        id='revenue-bar', 
+                        config={'responsive': True}, 
+                        className="untitled-graph graph",
+                        style={"height":"calc(50dvh - 140px)", "minHeight": "238px", "maxHeight":"423.333px"}
+                        ),
+                    ),
                 ], className='graph-container bar'),
 
                 # Salary by Rating Bar Plot
                 html.Div([
-                    dcc.Graph(id='rating-bar', config={'responsive': True}, className="untitled-graph graph"),
+                    dcc.Loading(
+                        dcc.Graph(
+                            id='rating-bar', 
+                            config={'responsive': True}, 
+                            className="untitled-graph graph",
+                            style={"height":"calc(50dvh - 140px)", "minHeight": "238px", "maxHeight":"423.333px"}
+                        ),
+                    ),
                 ], className='graph-container bar'),
 
             ], className="section-bars"),
@@ -103,7 +138,14 @@ app.layout = html.Div([
             # Average Salary by Sector
             html.Div([
                 html.H2("What sector is paying more?"),
-                dcc.Graph(id='avg-salary-graph', config={'responsive': True}, className="titled-graph graph"),
+                dcc.Loading(
+                    [dcc.Graph(
+                        id='avg-salary-graph', 
+                        config={'responsive': True}, 
+                        className="dot-graph graph",
+                        style={"height":"calc(100dvh - 150px)", "minHeight":"540px", "maxHeight": "976.667px"},
+                    )],
+                ),
             ], className='graph-container dotplot'),
 
         ], className="section-right section-side"),
