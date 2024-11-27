@@ -18,14 +18,14 @@ engine = create_engine(DB_PATH)
 salary_db = pd.read_sql_table(TABLENAME, con=engine)
 
 
-app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
+app = dash.Dash(__name__, title="Glassboard", external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
 
 avg_salary_non_remote, avg_salary_remote, perc_jobs_non_remote, perc_jobs_remote = graphics.calculate_salary_stats(salary_db)
 
 app.layout = html.Div([
 
     html.Div([
-        html.H1("Salary Dashboard: Glassdoor Data Analysis")
+        html.H1("Glassboard: Glassdoor Data Analysis")
     ], className='div-title'),
 
     # Create sections for different graphs
