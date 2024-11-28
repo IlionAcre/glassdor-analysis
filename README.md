@@ -4,7 +4,7 @@
 ![project_4](https://github.com/user-attachments/assets/e1a9e144-e47e-429c-b724-b96d40cde094)
 
 
-**Glassboard** is a data-driven dashboard that transforms job market data into actionable insights. By combining **web scraping, data analysis, and interactive visualizations**.
+**[Glassboard](https://glassdoor.falcontreras.com)** is a data-driven dashboard that transforms job market data into actionable insights. By combining **web scraping, data analysis, and interactive visualizations**.
 Glassboard helps you explore job trends, salary distributions, and company reviews in an intuitive and engaging way. Whether you're a job seeker looking for your next opportunity or a recruiter analyzing market dynamics.
 
 From scraping job postings on Glassdoor to deploying a fully containerized web app, this project showcases the power of **data science** and **modern web technologies** to deliver practical solutions.
